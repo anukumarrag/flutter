@@ -5,60 +5,59 @@ import 'package:flutter/material.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _userTransactions;
-  TransactionList(this._userTransactions);
+  final Function _deleteTx;
+  final Function _copyTx;
+
+  TransactionList(this._userTransactions, this._deleteTx, this._copyTx);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      alignment: Alignment.topCenter,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 10,
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 2)),
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    '\$ ${_userTransactions[index].amount.toStringAsFixed(2)}',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
-                        fontSize: 18),
+    return _userTransactions.length > 0
+        ? ListView.builder(
+            itemBuilder: (context, index) {
+              return Card(
+                elevation: 5,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    child: Padding(
+                      padding: EdgeInsets.all(6),
+                      child: FittedBox(
+                          child: Text('\$${_userTransactions[index].amount}')),
+                    ),
+                  ),
+                  title: Text('${_userTransactions[index].title}'),
+                  subtitle: Text(
+                    '${DateFormat.yMMMEd().format(_userTransactions[index].date)}',
+                  ),
+                  trailing: FittedBox(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () =>
+                              _copyTx(_userTransactions[index].ids),
+                          icon: Icon(Icons.copy),
+                          color: Colors.green.shade300,
+                        ),
+                        IconButton(
+                          onPressed: () =>
+                              _deleteTx(_userTransactions[index].ids),
+                          icon: Icon(Icons.delete),
+                          color: Colors.red,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _userTransactions[index].title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 24),
-                    ),
-                    Text(
-                      DateFormat.yMMMEd().format(_userTransactions[index].date),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                        fontSize: 12,
-                        fontFamily: 'KoHo-Light',
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+              );
+            },
+            itemCount: _userTransactions.length,
+            scrollDirection: Axis.vertical,
+          )
+        : Container(
+            padding: EdgeInsets.all(20),
+            alignment: Alignment.center,
+            child: Text("No data avaiable."),
           );
-        },
-        itemCount: _userTransactions.length,
-        scrollDirection: Axis.vertical,
-      ),
-    );
   }
 }

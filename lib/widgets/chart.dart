@@ -22,7 +22,7 @@ class Chart extends StatelessWidget {
       }
 
       return {'day': DateFormat.E().format(weekDay), 'amount': totalSum};
-    });
+    }).reversed.toList();
   }
 
   double get totalSpending {
@@ -34,22 +34,25 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(grouppedTransactionsValue);
-    return Card(
-      elevation: 6,
-      margin: EdgeInsets.all(10),
-      child: Row(
-        children: grouppedTransactionsValue.map((data) {
-          return Flexible(
-            fit: FlexFit.tight,
-            child: ChartBar(
-              data['day'].toString(),
-              double.parse(data['amount'].toString()),
-              totalSpending == 0.0
-                  ? 0.0
-                  : (data['amount'] as double) / totalSpending,
-            ),
-          );
-        }).toList(),
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.4,
+      child: Card(
+        elevation: 6,
+        //margin: EdgeInsets.all(10),
+        child: Row(
+          children: grouppedTransactionsValue.map((data) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                data['day'].toString(),
+                double.parse(data['amount'].toString()),
+                totalSpending == 0.0
+                    ? 0.0
+                    : (data['amount'] as double) / totalSpending,
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
